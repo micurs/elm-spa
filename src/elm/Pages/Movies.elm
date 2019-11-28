@@ -1,6 +1,6 @@
 module Pages.Movies exposing
     ( Model
-    , Msg
+    , Msg(..)
     , update
     , view
     )
@@ -13,7 +13,8 @@ import Html exposing (Html, div, p, text)
 
 
 type Movies
-    = NotLoaded
+    = Empty
+    | Loading
     | Loaded (List String)
     | Failed String
 
@@ -25,7 +26,7 @@ type alias Model =
 
 
 type Msg
-    = LoadMovies
+    = Open
     | GotMovies Movies
 
 
@@ -35,7 +36,7 @@ type Msg
 
 update : Msg -> Model
 update action =
-    { movies = NotLoaded
+    { movies = Empty
     , message = "click to load"
     }
 
@@ -46,4 +47,4 @@ update action =
 
 view : Model -> Html Msg
 view model =
-    p [] [ text model.message ]
+    p [] [ text "Movies here" ]

@@ -1,4 +1,4 @@
-module Pages.Home exposing
+module Pages.Characters exposing
     ( Model
     , Msg(..)
     , init
@@ -13,7 +13,7 @@ import Html exposing (Html, div, p, text)
 -- Home Page Model
 
 
-type Movies
+type Characters
     = Empty
     | Loading
     | Loaded (List String)
@@ -21,13 +21,14 @@ type Movies
 
 
 type alias Model =
-    { movies : Movies
+    { characters : Characters
     , message : String
     }
 
 
 type Msg
     = Open
+    | GotCharacters Characters
 
 
 
@@ -36,7 +37,7 @@ type Msg
 
 update : Msg -> Model
 update action =
-    { movies = Empty
+    { characters = Empty
     , message = "click to load"
     }
 
@@ -47,15 +48,15 @@ update action =
 
 init : Model
 init =
-    { movies = Empty
+    { characters = Empty
     , message = "click to load"
     }
 
 
 
--- Home Page View
+-- Characters Page View
 
 
 view : Model -> Html Msg
-view m =
-    p [] [ text "Start Wars Home page" ]
+view model =
+    p [] [ text "Characters here" ]

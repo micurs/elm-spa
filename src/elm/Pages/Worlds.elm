@@ -1,4 +1,4 @@
-module Pages.Home exposing
+module Pages.Worlds exposing
     ( Model
     , Msg(..)
     , init
@@ -13,7 +13,7 @@ import Html exposing (Html, div, p, text)
 -- Home Page Model
 
 
-type Movies
+type Worlds
     = Empty
     | Loading
     | Loaded (List String)
@@ -21,13 +21,12 @@ type Movies
 
 
 type alias Model =
-    { movies : Movies
-    , message : String
-    }
+    { worlds : Worlds, message : String }
 
 
 type Msg
     = Open
+    | GotWorlds Worlds
 
 
 
@@ -36,7 +35,7 @@ type Msg
 
 update : Msg -> Model
 update action =
-    { movies = Empty
+    { worlds = Empty
     , message = "click to load"
     }
 
@@ -47,15 +46,15 @@ update action =
 
 init : Model
 init =
-    { movies = Empty
+    { worlds = Empty
     , message = "click to load"
     }
 
 
 
--- Home Page View
+-- Worlds Page View
 
 
 view : Model -> Html Msg
-view m =
-    p [] [ text "Start Wars Home page" ]
+view model =
+    p [] [ text "Worlds here" ]
