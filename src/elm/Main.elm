@@ -1,8 +1,8 @@
-module Main exposing (main)
+module Main exposing (Msg(..), main)
 
 import Browser
-import Html exposing (Html, Attribute, a, button, div, li, map, span, text, ul)
-import Html.Attributes exposing ( class, href, style, type_)
+import Html exposing (Attribute, Html, a, button, div, li, map, span, text, ul)
+import Html.Attributes exposing (class, href, style, type_)
 import Html.Attributes.Aria exposing (role)
 import Html.Events exposing (onClick)
 import Pages.Characters as Characters
@@ -16,19 +16,28 @@ import Pages.Worlds as Worlds
 
 
 type Page
-    = Page String
+    = Home
+    | Movies
+    | Characters
+    | Worlds
 
 
-type Model
-    = Home Home.Model
-    | Movies Movies.Model
-    | Characters Characters.Model
-    | Worlds Worlds.Model
+type alias PageModels =
+    { home : Home.Model
+    , movies : Movies.Model
+    , characters : Characters.Model
+    , worlds : Worlds.Model
+    }
+
+
+type alias Model =
+    { page : Page
+    , pages : PageModels
+    }
 
 
 type Msg
-    = NoOp
-    | HomeMsg Home.Msg
+    = HomeMsg Home.Msg
     | MoviesMsg Movies.Msg
     | WorldsMsg Worlds.Msg
     | CharsMsg Characters.Msg
@@ -38,59 +47,135 @@ type Msg
 -- Update
 
 
+updateCurrPage : Model -> Bool -> Page -> PageModels -> Model
+updateCurrPage model isOpen mewPage pageModels =
+    if isOpen then
+        { model | page = mewPage, pages = pageModels }
+
+    else
+        { model | pages = pageModels }
+
+
+messageTo : (msg -> Msg) -> (msg -> Msg)
+messageTo cnstr msg =
+    cnstr msg
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
+    let
+        currPages =
+            model.pages
+
+        newModel =
+            updateCurrPage model
+    in
     case action of
-        HomeMsg msg ->
-            ( Home (Home.update msg), Cmd.none )
+        HomeMsg homeAction ->
+            let
+                ( homemodel, homeCmd ) =
+                    Home.update homeAction currPages.home
 
-        MoviesMsg msg ->
-            ( Movies (Movies.update msg), Cmd.none )
+                newPageModels =
+                    { currPages | home = homemodel }
+            in
+            ( newModel (homeAction == Home.Open) Home newPageModels
+            , Cmd.map HomeMsg homeCmd
+            )
 
-        WorldsMsg msg ->
-            ( Worlds (Worlds.update msg), Cmd.none )
+        MoviesMsg moviesAction ->
+            let
+                ( moviesModel, moviesCmd ) =
+                    Movies.update moviesAction currPages.movies
 
-        CharsMsg msg ->
-            ( Characters (Characters.update msg), Cmd.none )
+                newPageModels =
+                    { currPages | movies = moviesModel }
+            in
+            ( newModel (moviesAction == Movies.Open) Movies newPageModels
+            , Cmd.map MoviesMsg moviesCmd
+            )
 
-        _ ->
-            ( model, Cmd.none )
+        WorldsMsg worldsAction ->
+            let
+                ( worldsModel, worldsCmd ) =
+                    Worlds.update worldsAction currPages.worlds
 
+                newPageModels =
+                    { currPages | worlds = worldsModel }
+            in
+            ( newModel (worldsAction == Worlds.Open) Worlds newPageModels
+            , Cmd.map WorldsMsg worldsCmd
+            )
 
+        CharsMsg charsAction ->
+            let
+                ( charsModel, charsCmd ) =
+                    Characters.update charsAction currPages.characters
 
--- View
+                newPageModels =
+                    { currPages | characters = charsModel }
+            in
+            ( newModel (charsAction == Characters.Open) Characters newPageModels
+            , Cmd.map CharsMsg charsCmd
+            )
 
 
 viewPage : Model -> Html Msg
 viewPage model =
-    case model of
-        Home m ->
+    case model.page of
+        Home ->
             -- capture Home.Msg(a) and convert them to HomeMsg Home.Msg
-            map (\msg -> HomeMsg msg) (Home.view m)
+            map (messageTo HomeMsg) (Home.view model.pages.home)
 
-        Movies m ->
-            map (\msg -> MoviesMsg msg) (Movies.view m)
+        Movies ->
+            map (messageTo MoviesMsg) (Movies.view model.pages.movies)
 
-        Characters m ->
-            map (\msg -> CharsMsg msg) (Characters.view m)
+        Characters ->
+            map (messageTo CharsMsg) (Characters.view model.pages.characters)
 
-        Worlds m ->
-            map (\msg -> WorldsMsg msg) (Worlds.view m)
+        Worlds ->
+            map (messageTo WorldsMsg) (Worlds.view model.pages.worlds)
 
-getNavClass: Model -> String -> Attribute Msg
+
+getNavClass : Model -> String -> Attribute Msg
 getNavClass model name =
-    case model of
-        Home _ ->
-            class (if name == "Home" then "nav-item active" else "nav-item")
+    case model.page of
+        Home ->
+            class
+                (if name == "Home" then
+                    "nav-item active"
 
-        Movies _ ->
-            class (if name == "Movies" then "nav-item active" else "nav-item")
+                 else
+                    "nav-item"
+                )
 
-        Characters _ ->
-            class (if name == "Characters" then "nav-item active" else "nav-item")
+        Movies ->
+            class
+                (if name == "Movies" then
+                    "nav-item active"
 
-        Worlds _ ->
-            class (if name == "Worlds" then "nav-item active" else "nav-item")
+                 else
+                    "nav-item"
+                )
+
+        Characters ->
+            class
+                (if name == "Characters" then
+                    "nav-item active"
+
+                 else
+                    "nav-item"
+                )
+
+        Worlds ->
+            class
+                (if name == "Worlds" then
+                    "nav-item active"
+
+                 else
+                    "nav-item"
+                )
+
 
 view : Model -> Html Msg
 view model =
@@ -123,7 +208,14 @@ view model =
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
-    ( Home Home.init
+    ( { page = Home
+      , pages =
+            { home = Home.init
+            , movies = Movies.init
+            , characters = Characters.init
+            , worlds = Worlds.init
+            }
+      }
     , Cmd.none
     )
 

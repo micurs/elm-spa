@@ -21,8 +21,7 @@ type Movies
 
 
 type alias Model =
-    { movies : Movies
-    , message : String
+    { message : String
     }
 
 
@@ -34,11 +33,11 @@ type Msg
 -- Update
 
 
-update : Msg -> Model
-update action =
-    { movies = Empty
-    , message = "click to load"
-    }
+update : Msg -> Model -> ( Model, Cmd Msg )
+update action model =
+    case action of
+        _ ->
+            ( model, Cmd.none )
 
 
 
@@ -47,8 +46,7 @@ update action =
 
 init : Model
 init =
-    { movies = Empty
-    , message = "click to load"
+    { message = "click to load"
     }
 
 

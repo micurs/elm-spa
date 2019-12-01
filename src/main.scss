@@ -3,13 +3,13 @@
 
 
 body {
-  background-color: #ddd;
+  background-color: $secondary;
 }
 
 div.app {
   display: flex;
   flex-direction: column;
-  padding: 0.4rem;
+  padding: 0.6rem;
   height: 100vh;
 
   .nav {
@@ -20,10 +20,14 @@ div.app {
       margin-right: -1px;
       min-width: 120px;
       z-index: 100;
-      border-bottom: solid 1px transparent;
+      border-bottom: solid 1px $border-color;
       background-color: #f0f0f0;
       white-space: nowrap;
-      box-shadow: inset 1px -1px 2px 0px rgba(0,0,0,0.2);
+      // box-shadow: inset 1px -1px 1px 0px rgba(0,0,0,0.2);
+      border-top: solid 1px $border-color;
+      border-right: solid 1px $border-color;
+      border-left: solid 1px $border-color;
+
       &:first-child {
         border-radius: 7px 0 0 0;
       }
@@ -36,6 +40,11 @@ div.app {
         background-color: white;
         border-bottom: solid 1px white;
       }
+
+      span.nav-link {
+        color: $primary;
+        font-weight: 500;
+      }
     }
   }
 
@@ -44,10 +53,9 @@ div.app {
     flex-grow: 1;
     background-color: white;
     z-index: 1;
-    margin-top: -1px;
-    border: solid 1px lightgrey;
+    border: solid 2px border-color;
     padding: 1rem;
-    border-radius: 0 5px 5px 5px;
-    box-shadow: 0px 4px 8px rgba(0,0,0, 0.2);
+    border-radius: 0 7px 7px 7px;
+    box-shadow: 2px 4px 8px rgba(0,0,0, 0.4);
   }
 }

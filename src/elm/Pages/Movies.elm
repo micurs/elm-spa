@@ -1,22 +1,22 @@
 module Pages.Movies exposing
     ( Model
     , Msg(..)
+    , init
     , update
     , view
     )
 
-import Html exposing (Html, div, p, text)
+import Api exposing (ApiResponse, Movie, dataToItems, getMovies, jsonToMovies)
+import Bootstrap exposing (Items(..), listItem, viewItems, viewTitle)
+import Html exposing (Html, div, text)
 
 
 
 -- Movies Page Model
 
 
-type Movies
-    = Empty
-    | Loading
-    | Loaded (List String)
-    | Failed String
+type alias Movies =
+    Items Movie
 
 
 type alias Model =
@@ -27,17 +27,44 @@ type alias Model =
 
 type Msg
     = Open
-    | GotMovies Movies
+    | GetMovies
+    | GotMovies ApiResponse
 
 
 
 -- Update
 
 
-update : Msg -> Model
-update action =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update action model =
+    case action of
+        Open ->
+            if model.movies == Empty then
+                ( { model | message = "Loading Movies...", movies = Loading }, getMovies GotMovies )
+
+            else
+                ( model, Cmd.none )
+
+        GetMovies ->
+            ( { model | message = "Loading Movies...", movies = Loading }, getMovies GotMovies )
+
+        GotMovies response ->
+            case response of
+                Ok data ->
+                    ( { model | message = "StarWars Movies", movies = dataToItems (jsonToMovies data) }, Cmd.none )
+
+                Err _ ->
+                    ( { model | message = "Http Error - request failed" }, Cmd.none )
+
+
+
+-- Init
+
+
+init : Model
+init =
     { movies = Empty
-    , message = "click to load"
+    , message = "StarWars movies"
     }
 
 
@@ -45,6 +72,14 @@ update action =
 -- Movies Page View
 
 
+viewMovie : Movie -> Html Msg
+viewMovie movie =
+    listItem [] [ text movie.title ]
+
+
 view : Model -> Html Msg
 view model =
-    p [] [ text "Movies here" ]
+    div []
+        [ viewTitle GetMovies model.message
+        , viewItems viewMovie model.movies
+        ]
