@@ -3,7 +3,7 @@ module Bootstrap exposing (..)
 import Html exposing (Html, div, h2, li, p, text, ul)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-
+import Api exposing (Items(..))
 
 addAttrClass c ma =
     List.append [ class c ] ma
@@ -37,11 +37,6 @@ viewTitle event title =
         ]
 
 
-type Items a
-    = Empty
-    | Loading
-    | Loaded (List a)
-    | Failed String
 
 
 viewItems : (a -> Html msg) -> Items a -> Html msg

@@ -6,8 +6,8 @@ module Pages.Movies exposing
     , view
     )
 
-import Api exposing (ApiResponse, Movie, dataToItems, getMovies, jsonToMovies)
-import Bootstrap exposing (Items(..), listItem, viewItems, viewTitle)
+import Api exposing (ApiResponse, Items(..), Movie, dataToItems, getMovies, jsonToMovies)
+import Bootstrap exposing (listItem, viewItems, viewTitle)
 import Html exposing (Html, div, text)
 
 

@@ -1,6 +1,7 @@
 module Api exposing
     ( ApiResponse
     , Character
+    , Items(..)
     , Movie
     , World
     , dataToItems
@@ -12,7 +13,6 @@ module Api exposing
     , jsonToWorlds
     )
 
-import Bootstrap exposing (Items(..))
 import Http exposing (Error)
 import Json.Decode as Decode
     exposing
@@ -27,6 +27,13 @@ import Json.Decode as Decode
         , maybe
         , string
         )
+
+
+type Items a
+    = Empty
+    | Loading
+    | Loaded (List a)
+    | Failed String
 
 
 type alias VehicleConnection =

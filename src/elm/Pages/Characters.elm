@@ -6,8 +6,8 @@ module Pages.Characters exposing
     , view
     )
 
-import Api exposing (ApiResponse, Character, dataToItems, getCharacters, jsonToCharacters)
-import Bootstrap exposing (Items(..), listItem, viewItems, viewTitle)
+import Api exposing (ApiResponse, Character, Items(..), dataToItems, getCharacters, jsonToCharacters)
+import Bootstrap exposing (listItem, viewItems, viewTitle)
 import Html exposing (Html, div, text)
 
 

@@ -6,8 +6,8 @@ module Pages.Worlds exposing
     , view
     )
 
-import Api exposing (ApiResponse, World, dataToItems, getWorlds, jsonToWorlds)
-import Bootstrap exposing (Items(..), listItem, viewItems, viewTitle)
+import Api exposing (ApiResponse, Items(..), World, dataToItems, getWorlds, jsonToWorlds)
+import Bootstrap exposing (listItem, viewItems, viewTitle)
 import Html exposing (Html, div, text)
 
 
